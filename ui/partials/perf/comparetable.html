@@ -81,7 +81,8 @@
         <ph-average value="{{compareResult.originalValue}}"
                     stddev="{{compareResult.originalStddev}}"
                     stddevpct="{{compareResult.originalStddevPct}}"
-                    replicates="compareResult.originalRuns"></ph-average>
+                    replicates="compareResult.originalRuns"
+                    outliers="compareResult.originalOutliers"></ph-average>
       </td>
       <td>
         <span ng-class="getCompareClasses(compareResult)" ng-if="compareResult.originalValue < compareResult.newValue">
@@ -95,7 +96,8 @@
         <ph-average value="{{compareResult.newValue}}"
                     stddev="{{compareResult.newStddev}}"
                     stddevpct="{{compareResult.newStddevPct}}"
-                    replicates="compareResult.newRuns"></ph-average>
+                    replicates="compareResult.newRuns"
+                    outliers="compareResult.newOutliers"></ph-average>
       </td>
       <td ng-class="$ctrl.getCompareClasses(compareResult)">
         <span ng-if="compareResult.delta  && compareResult.newIsBetter" class="detail-hint" uib-tooltip="Mean difference: {{compareResult.delta|displayNumber}} (= {{compareResult.deltaPercentage|absoluteValue|displayNumber}}% better)">

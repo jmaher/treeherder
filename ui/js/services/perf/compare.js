@@ -93,11 +93,36 @@ treeherder.factory('PhCompare', [
                         average: average,
                         stddev: stddev,
                         stddevPct: Math.round(math.percentOf(stddev, average) * 100) / 100,
+                        outliers: [],
 
                         // We use slice to keep the original values at their original order
                         // in case the order is important elsewhere.
                         runs: values.slice().sort(numericCompare)
                     };
+                }
+
+                function identifyOutliers(values, testName) {
+                    var map = analyzeSet(values, testName);
+                    if (testName === 'Noise Metric') {
+                        return map;
+                    }
+
+                    // find mean/stddev, then for each data point if it is >2 stddev from mean
+                    // treat as outlier, then remove and recalculate
+                    let low = map.average - 2*map.stddev;
+                    let high = map.average + 2*map.stddev;
+                    var cleanvalues = [];
+                    var outliers = [];
+                    values.forEach((datum) => {
+                        if (datum >= low && datum <= high) {
+                            cleanvalues.push(datum);
+                        } else {
+                            outliers.push(datum);
+                        }
+                    });
+                    map = analyzeSet(cleanvalues, testName);
+                    map.outliers = outliers;
+                    return map;
                 }
 
                 // Eventually the result object, after setting properties as required.
@@ -114,20 +139,36 @@ treeherder.factory('PhCompare', [
                 cmap.isEmpty = false;
 
                 if (hasOrig) {
-                    const orig = analyzeSet(originalData.values, testName);
+//                    const orig = analyzeSet(originalData.values, testName);
+                    const orig = identifyOutliers(originalData.values, testName);
+                    var oldoutliers = identifyOutliers(originalData.values, testName);
                     cmap.originalValue = orig.average;
                     cmap.originalRuns = orig.runs;
                     cmap.originalStddev = orig.stddev;
                     cmap.originalStddevPct = orig.stddevPct;
+                    cmap.originalOutliers = oldoutliers.outliers;
+                    cmap.oldoutliers_originalValue = oldoutliers.average;
+                    cmap.oldoutliers_originalRuns = oldoutliers.runs;
+                    cmap.oldoutliers_originalStddev = oldoutliers.stddev;
+                    cmap.oldoutliers_originalStddevPct = oldoutliers.stddevPct;
+
                 } else {
                     cmap.originalRuns = [];
                 }
                 if (hasNew) {
-                    const newd = analyzeSet(newData.values, testName);
+//                    const newd = analyzeSet(newData.values, testName);
+                    const newd = identifyOutliers(newData.values, testName);
+                    var newoutliers = identifyOutliers(newData.values, testName);
                     cmap.newValue = newd.average;
                     cmap.newRuns = newd.runs;
                     cmap.newStddev = newd.stddev;
                     cmap.newStddevPct = newd.stddevPct;
+                    cmap.newOutliers = newoutliers.outliers;
+                    cmap.newoutlier_newValue = newoutliers.average;
+                    cmap.newoutlier_newRuns = newoutliers.runs;
+                    cmap.newoutlier_newStddev = newoutliers.stddev;
+                    cmap.newoutlier_newStddevPct = newoutliers.stddevPct;
+
                 } else {
                     cmap.newRuns = [];
                 }

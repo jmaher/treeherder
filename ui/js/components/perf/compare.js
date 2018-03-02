@@ -92,7 +92,8 @@ treeherder.component('phAverage', {
         value: '@',
         stddev: '@',
         stddevpct: '@',
-        replicates: '<'
+        replicates: '<',
+        outliers: '<'
     }
 });
 

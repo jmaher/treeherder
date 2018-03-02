@@ -3,6 +3,10 @@
       uib-tooltip-template="'partials/perf/tooltipgraphs.html'" tooltip-class="compare-table-tooltip">
   {{$ctrl.value|displayNumber}} &#177; {{$ctrl.stddevpct|displayNumber}}%
 </span>
+<span class="detail-hint" ng-if="$ctrl.outliers.length >= 1"
+      uib-tooltip-template="'partials/perf/outliers.html'" tooltip-class="compare-table-tooltip">
+  *
+</span>
 <!-- View for only 1 run (no stddev) -->
 <span class="detail-hint" ng-if="$ctrl.replicates.length === 1"
       uib-tooltip="Only one run (consider more for greater confidence)">
