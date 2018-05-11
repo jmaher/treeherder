@@ -102,17 +102,17 @@ treeherder.factory('PhCompare', [
                 }
 
                 function identifyOutliers(values, testName) {
-                    var map = analyzeSet(values, testName);
+                    let map = analyzeSet(values, testName);
                     if (testName === 'Noise Metric') {
                         return map;
                     }
 
                     // find mean/stddev, then for each data point if it is >2 stddev from mean
                     // treat as outlier, then remove and recalculate
-                    let low = map.average - 2*map.stddev;
-                    let high = map.average + 2*map.stddev;
-                    var cleanvalues = [];
-                    var outliers = [];
+                    const low = map.average - 2*map.stddev;
+                    const high = map.average + 2*map.stddev;
+                    const cleanvalues = [];
+                    const outliers = [];
                     values.forEach((datum) => {
                         if (datum >= low && datum <= high) {
                             cleanvalues.push(datum);
@@ -141,7 +141,7 @@ treeherder.factory('PhCompare', [
                 if (hasOrig) {
 //                    const orig = analyzeSet(originalData.values, testName);
                     const orig = identifyOutliers(originalData.values, testName);
-                    var oldoutliers = identifyOutliers(originalData.values, testName);
+                    const oldoutliers = identifyOutliers(originalData.values, testName);
                     cmap.originalValue = orig.average;
                     cmap.originalRuns = orig.runs;
                     cmap.originalStddev = orig.stddev;
@@ -158,7 +158,7 @@ treeherder.factory('PhCompare', [
                 if (hasNew) {
 //                    const newd = analyzeSet(newData.values, testName);
                     const newd = identifyOutliers(newData.values, testName);
-                    var newoutliers = identifyOutliers(newData.values, testName);
+                    const newoutliers = identifyOutliers(newData.values, testName);
                     cmap.newValue = newd.average;
                     cmap.newRuns = newd.runs;
                     cmap.newStddev = newd.stddev;
